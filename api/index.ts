@@ -40,7 +40,8 @@ router.ws('/chat', (ws, req) => {
       Object.values(activeConnections).forEach(connection =>{
         const outgoingMsg = {type: 'NEW_DRAWS', payload: {
             username: username,
-            message: parsedMessage.payload,
+            dotX: parsedMessage.payload,
+            dotY: parsedMessage.payload,
           }};
         connection.send(JSON.stringify(outgoingMsg));
       });
