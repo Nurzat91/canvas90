@@ -23,23 +23,18 @@ router.ws('/chat', (ws, req) => {
   const id = crypto.randomUUID();
   console.log('client connected id=', id);
   activeConnections[id] = ws;
-  let username: string | Draws[] = 'Anonymous';
 
-  ws.send(JSON.stringify({type: 'WELCOME', payload: 'Hello, you have connected to the chat'}));
 
   ws.on('message', (message) =>{
     console.log(message.toString());
     const parsedMessage = JSON.parse(message.toString()) as IncomingMessage;
 
-    if (parsedMessage.type === 'SET_USERNAME'){
-      username = parsedMessage.payload;
-    }else if (parsedMessage.type === 'SEND_DRAWS'){
+    if (parsedMessage.type === 'SEND_DRAWS'){
       const data = parsedMessage.payload as Draws[];
       draws = draws.concat(data);
 
       Object.values(activeConnections).forEach(connection =>{
         const outgoingMsg = {type: 'NEW_DRAWS', payload: {
-            username: username,
             dotX: parsedMessage.payload,
             dotY: parsedMessage.payload,
           }};
