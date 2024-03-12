@@ -31,10 +31,10 @@ router.ws('/draw', (ws, req) => {
 
     if (parsedMessage.type === 'SEND_DRAWS'){
       const data = parsedMessage.payload as Draws[];
-      draws = draws.concat(data);
+      draws.push(...data);
 
-      Object.keys(activeConnections).forEach(connId => {
-        const conn = activeConnections[connId];
+      Object.keys(activeConnections).forEach(id => {
+        const conn = activeConnections[id];
         const outgoingMsg = {type: 'NEW_DRAWS', payload: draws};
         conn.send(JSON.stringify(outgoingMsg));
       });
