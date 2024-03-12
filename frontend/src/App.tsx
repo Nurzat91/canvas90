@@ -13,7 +13,7 @@ function App() {
     ws.current.addEventListener('message', (event) => {
       const decodedMessage = JSON.parse(event.data) as IncomingChatMessage;
       if (decodedMessage.type === 'NEW_DRAWS') {
-        setDraw((dots) => dots.concat(decodedMessage.payload));
+        setDraw((prevDraws) => [...prevDraws, decodedMessage.payload]);
       }
     });
     return () => {

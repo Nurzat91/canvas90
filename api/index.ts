@@ -19,7 +19,7 @@ const router = express.Router();
 let draws: Draws[];
 
 const activeConnections: ActiveConnections = {};
-router.ws('/chat', (ws, req) => {
+router.ws('/draw', (ws, req) => {
   const id = crypto.randomUUID();
   console.log('client connected id=', id);
   activeConnections[id] = ws;
@@ -33,12 +33,10 @@ router.ws('/chat', (ws, req) => {
       const data = parsedMessage.payload as Draws[];
       draws = draws.concat(data);
 
-      Object.values(activeConnections).forEach(connection =>{
-        const outgoingMsg = {type: 'NEW_DRAWS', payload: {
-            dotX: parsedMessage.payload,
-            dotY: parsedMessage.payload,
-          }};
-        connection.send(JSON.stringify(outgoingMsg));
+      Object.keys(activeConnections).forEach(connId => {
+        const conn = activeConnections[connId];
+        const outgoingMsg = {type: 'NEW_DRAWS', payload: draws};
+        conn.send(JSON.stringify(outgoingMsg));
       });
     }
   });
